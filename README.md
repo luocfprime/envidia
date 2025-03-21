@@ -41,6 +41,7 @@ commands.
 Setting environment variables manually can be cumbersome. Envidia provides a convenient way to set them via alias.
 
 ❌: `export CUDA_VISIBLE_DEVICES="0"`
+
 ✅: `source <(e --cuda 0)` or simply `es --cuda 0` if you have `eval $(envidia install)` in your `.bashrc` or `.zshrc`.
 
 Put the following line in your `.bashrc` or `.zshrc`:
