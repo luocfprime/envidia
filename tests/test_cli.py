@@ -35,10 +35,23 @@ def test_env_loading(runner, test_envd_path):
     """Test end-to-end environment variable loading"""
     result = runner.invoke(CLI(loader=loader).create_main_command())
 
-    print(result.output)
     assert "export CUDA_VISIBLE_DEVICES=0" in result.output  # Updated
     assert "export FOO=baz" in result.output  # Added
     assert "export NAME=proj" in result.output  # Added
     assert "export DOCKER_IMAGE=proj-api" in result.output  # Added
     assert "export IMAGE_URL=proj-api:latest" in result.output  # Added
     assert "alias n='notify'" in result.output  # Added
+
+
+def test_bootstrap_pre_hook(runner, test_envd_path):
+    result = runner.invoke(CLI(loader=loader).create_main_command())
+    assert "export HF_TRANSFER=0" in result.output
+
+
+def test_bootstrap_post_hook(runner, test_envd_path):
+    result = runner.invoke(
+        CLI(loader=loader).create_main_command(),
+        args=["--foo", "/a/none/existent/path"],
+    )
+    assert result.exit_code != 0
+    assert "FOO_PATH must exist" in str(result)

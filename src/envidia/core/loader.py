@@ -9,9 +9,7 @@ from dotenv import dotenv_values
 
 
 class Loader:
-    def __init__(
-        self,
-    ):
+    def __init__(self):
         self.load_sequence_fn: Callable[[List[Path]], List[Path]] = natsort.natsorted
         self.env_dir = None
         self.registered_options = {}

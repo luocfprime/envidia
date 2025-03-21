@@ -88,4 +88,3 @@ warn_unused_ignores = false
 
 disallow_subclassing_any = false
 disallow_any_generics = false
-
