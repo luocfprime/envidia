@@ -1,3 +1,5 @@
+__version__ = "0.1.0"
+
 from envidia.core.loader import Loader, loader
 
 set_load_sequence_fn = loader.set_load_sequence_fn
