@@ -1,6 +1,6 @@
 # Envidia
 
-![Unit Tests](https://github.com/fkcptlst/labtasker/actions/workflows/unit-test-matrix.yml/badge.svg)
+![Unit Tests](https://github.com/fkcptlst/envidia/actions/workflows/unit-test-matrix.yml/badge.svg)
 ![Python Versions](https://img.shields.io/pypi/pyversions/envidia)
 ![PyPI](https://img.shields.io/pypi/v/envidia)
 
