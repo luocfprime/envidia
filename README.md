@@ -1,8 +1,27 @@
 # Envidia
 
-Envidia is a command-line interface (CLI) tool for loading project level environment variables, and making alias for long environment variable names.
+![Unit Tests](https://github.com/fkcptlst/labtasker/actions/workflows/unit-test-matrix.yml/badge.svg)
+![Python Versions](https://img.shields.io/pypi/pyversions/envidia)
+![PyPI](https://img.shields.io/pypi/v/envidia)
+
+Envidia is a command-line interface (CLI) tool for loading project-level environment variables and simplifying the
+setting of long environment variables with aliases.
+
+## Table of Contents
+
+- [Envidia](#envidia)
+    - [Table of Contents](#table-of-contents)
+    - [Install](#install)
+    - [Features](#features)
+        - [1. Loading `.env` from a directory](#1-loading-env-from-a-directory)
+        - [2. Set Environment Variables via Alias](#2-set-environment-variables-via-alias)
+        - [3. Integration with Cookiecutter](#3-integration-with-cookiecutter)
+        - [4. Pre-load and Post-load Hooks](#4-pre-load-and-post-load-hooks)
+    - [License](#license)
 
 ## Install
+
+To install Envidia, use pip:
 
 ```bash
 pip install envidia
@@ -12,13 +31,14 @@ pip install envidia
 
 ### 1. Loading `.env` from a directory
 
-You can simply put equivalent `source <(e)` in your experiment wrapper script to replace long and verbose environment variable declarations.
+Envidia allows you to load environment variables from a directory, replacing long and verbose declarations with simple
+commands.
 
 ![load-demo](assets/load.gif)
 
 ### 2. Set Environment Variables via Alias
 
-Manually setting environment variables is cumbersome. Envidia provides a convenient way to set environment variables via alias.
+Setting environment variables manually can be cumbersome. Envidia provides a convenient way to set them via alias.
 
 ❌: `export CUDA_VISIBLE_DEVICES="0"`
 ✅: `source <(e --cuda 0)` or simply `es --cuda 0` if you have `eval $(envidia install)` in your `.bashrc` or `.zshrc`.
@@ -37,21 +57,19 @@ from envidia import register_option
 register_option("cuda", "CUDA_VISIBLE_DEVICES", default="0")
 ```
 
-And you can use `es` to set environment variables specified in `env.d`. (`es` is short for "env set").
+Use `es` to set environment variables specified in `env.d`. ( es is short for "env set").
 
 ![alias-demo](assets/alias.gif)
 
 ### 3. Integration with [Cookiecutter](https://github.com/cookiecutter/cookiecutter)
 
-You can pack your project environment variables as a cookiecutter template. This saves you from manually setting environment variables.
+Pack your project environment variables as a cookiecutter template to reuse them across different projects.
 
 ![cookiecutter-demo](assets/cookiecutter.gif)
 
 ### 4. Pre-load and Post-load Hooks
 
-Suppose you have specified some path variables, and you want to verify the path variables actually exist.
-
-You can use `pre_load` and `post_load` hooks to do that. Below is an example:
+Use hooks to verify path variables or add extra variables into the environment.
 
 ```python
 # env.d/bootstrap.py
@@ -61,6 +79,7 @@ from envidia import Loader, register_option
 
 register_option("cuda", "CUDA_VISIBLE_DEVICES", default="0")
 register_option("foo", "FOO_PATH", default=".")
+
 
 def pre_load(loader: Loader):
     # add extra variable into the environment
@@ -76,3 +95,7 @@ def post_load(loader: Loader):
     if not Path(loader.env_registry.get("FOO_PATH", "")).exists():
         raise RuntimeError("FOO_PATH must exist")
 ```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
