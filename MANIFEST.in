@@ -1,0 +1,25 @@
+graft envidia
+graft tests
+
+include tox.ini
+
+prune build
+prune dist
+prune *.egg-info
+
+prune .venv
+prune .tox
+
+exclude Makefile
+exclude coverage.xml
+
+exclude poetry.lock
+exclude poetry.toml
+
+prune .vscode
+prune .github
+
+global-exclude *~ *.py[cod] *.so *.coverage
+
+prune __pycache__
+prune docs
