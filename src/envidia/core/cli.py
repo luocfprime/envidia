@@ -30,7 +30,10 @@ class CLI:
         @self._add_dynamic_options
         def cli(ctx, **kwargs):
             """Load from env.d and generate shell script. Run `source <(envidia)` or simply `source <(e)` to load environment context."""
-            if not self._bootstrap_loaded and ctx.invoked_subcommand != "init":
+            if not self._bootstrap_loaded and ctx.invoked_subcommand not in [
+                "init",
+                "install",
+            ]:
                 click.echo(
                     "env.d is not initialized yet. Run `envidia init` to initialize."
                 )
