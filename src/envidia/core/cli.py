@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 from shlex import quote
 from typing import Callable
 
@@ -9,17 +10,17 @@ from envidia.core.loader import Loader
 
 
 class CLI:
-    def __init__(
-        self,
-        loader: Loader,
-    ):
+    def __init__(self, loader: Loader):
         self.loader = loader
-        try:
-            self.loader.load_bootstrap()
-        except FileNotFoundError:  # env.d is not initialized yet
-            pass
+        self._bootstrap_loaded = False
 
     def create_main_command(self) -> click.Command:
+        try:
+            self.loader.set_env_dir(Path.cwd() / "env.d")
+            self.loader.load_bootstrap()
+            self._bootstrap_loaded = True
+        except FileNotFoundError:  # env.d is not initialized yet.
+            pass
 
         @click.group(
             context_settings={"help_option_names": ["-h", "--help"]},
@@ -29,17 +30,21 @@ class CLI:
         @self._add_dynamic_options
         def cli(ctx, **kwargs):
             """Load from env.d and generate shell script. Run `source <(envidia)` or simply `source <(e)` to load environment context."""
+            if not self._bootstrap_loaded and ctx.invoked_subcommand != "init":
+                click.echo(
+                    "env.d is not initialized yet. Run `envidia init` to initialize."
+                )
+                raise click.exceptions.Exit()
             if ctx.invoked_subcommand is None:
-                self.loader.load_bootstrap()
                 commands = self.loader.generate_shell_commands(ctx.params)
                 click.echo(commands)
 
         @cli.command()
-        @click.argument("path", type=click.Path(exists=True))
-        def init(path):
+        @click.argument("template", type=click.Path(exists=True))
+        def init(template):
             """Initialize new environment template using cookiecutter"""
-            cookiecutter(path)
-            click.echo(f"Successfully initialized template from {path}")
+            cookiecutter(template)
+            click.echo(f"Successfully initialized template from {template}")
 
         @cli.command()
         @click.option(
@@ -60,7 +65,6 @@ class CLI:
         def show(ctx):
             """Show execution order"""
             # Generate commands first to populate call log
-            self.loader.load_bootstrap()
             self.loader.generate_shell_commands(ctx.params)
             for i, entry in enumerate(self.loader.call_log):
                 click.echo(f"[{i}] {entry}")
@@ -73,6 +77,7 @@ class CLI:
             f = click.option(
                 f"--{name}",
                 type=str,
+                default=config["default"],
                 help=config["help"],
             )(f)
         return f

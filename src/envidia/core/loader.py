@@ -11,15 +11,17 @@ from dotenv import dotenv_values
 class Loader:
     def __init__(
         self,
-        env_dir: Union[str, Path],
     ):
         self.load_sequence_fn: Callable[[List[Path]], List[Path]] = natsort.natsorted
-        self.env_dir = Path(env_dir)
+        self.env_dir = None
         self.registered_options = {}
         self.env_registry = {}
         self.bootstrap = None
         self.call_log = []
         self._bootstrap_loaded = False
+
+    def set_env_dir(self, env_dir: Union[str, Path]):
+        self.env_dir = Path(env_dir)
 
     def load_bootstrap(self):
         if self._bootstrap_loaded:
@@ -135,6 +137,7 @@ class Loader:
         self,
         name: str,
         env_var: str,
+        default: str,
         transform: Callable = lambda x: str(x),
         help: str = "Sets {env_var} environment variable.",
     ) -> None:
@@ -143,6 +146,7 @@ class Loader:
         Args:
             name: CLI option name (without --)
             env_var: Target environment variable
+            default: Default value of the environment variable
             transform: Function to transform option value
             help: help message to display when `envidia -h`
 
@@ -150,6 +154,7 @@ class Loader:
         self.registered_options[name] = {
             "env_var": env_var,
             "transform": transform,
+            "default": default,
             "help": help.format(env_var=env_var),
         }
 
@@ -159,4 +164,4 @@ class Loader:
         self.load_sequence_fn = load_sequence_fn
 
 
-loader = Loader(env_dir="env.d")
+loader = Loader()
