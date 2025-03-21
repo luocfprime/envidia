@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+from typing import Optional
 
 import tomli
 from packaging.version import InvalidVersion, Version
@@ -27,7 +28,7 @@ def get_pyproject_version() -> str:
     raise ValueError(f"{pyproject_toml} not found")
 
 
-def check_version_match(tag: str = None) -> bool:
+def check_version_match(tag: Optional[str] = None) -> bool:
     """Check if the version in pyproject.toml, the provided tag, and __version__ match.
 
     Args:
