@@ -2,7 +2,7 @@ import importlib.util
 from itertools import chain
 from pathlib import Path
 from shlex import quote
-from typing import Any, Callable, Dict, List, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import natsort
 from dotenv import dotenv_values
@@ -100,6 +100,7 @@ class Loader:
             [
                 f"export {env_var}={quote(value)}"
                 for env_var, value in self.env_registry.items()
+                if value is not None
             ]
         )
 
@@ -120,6 +121,10 @@ class Loader:
         for opt, value in options.items():
             if opt in self.registered_options:
                 self._log_called(f"process cli option: {opt}")
+                if value is None:
+                    self._log_called(f"ignoring cli option as it is None: {opt}")
+                    self.env_registry[self.registered_options[opt]["env_var"]] = None
+                    continue
                 self.env_registry[self.registered_options[opt]["env_var"]] = (
                     self._transform_value(opt, value)
                 )
@@ -135,8 +140,8 @@ class Loader:
         self,
         name: str,
         env_var: str,
-        default: str,
-        transform: Callable = lambda x: str(x),
+        default: Optional[str] = None,
+        transform: Callable = lambda x: x,
         help: str = "Sets {env_var} environment variable.",
     ) -> None:
         """Register a CLI option to environment variable mapping.
@@ -144,7 +149,7 @@ class Loader:
         Args:
             name: CLI option name (without --)
             env_var: Target environment variable
-            default: Default value of the environment variable
+            default: Default value of the environment variable. If None, this environment variable will not be set.
             transform: Function to transform option value
             help: help message to display when `envidia -h`
 

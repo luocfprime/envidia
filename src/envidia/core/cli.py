@@ -65,7 +65,8 @@ class CLI:
 
         @cli.command()
         @click.pass_context
-        def show(ctx):
+        @self._add_dynamic_options
+        def show(ctx, **kwargs):
             """Show execution order"""
             # Generate commands first to populate call log
             self.loader.generate_shell_commands(ctx.params)
