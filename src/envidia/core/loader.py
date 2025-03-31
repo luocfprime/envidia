@@ -57,10 +57,10 @@ class Loader:
     def get_script_paths(self):
         script_files = chain(
             self.env_dir.glob("*.sh"),
-            self.env_dir.glob(".bash"),
+            self.env_dir.glob("*.bash"),
             self.env_dir.glob(".bashrc"),
             self.env_dir.glob(".zshrc"),
-            self.env_dir.glob(".zsh"),
+            self.env_dir.glob("*.zsh"),
             self.env_dir.glob(".profile"),
             self.env_dir.glob(".bash_profile"),
             self.env_dir.glob(".zprofile"),
