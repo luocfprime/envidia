@@ -6,6 +6,7 @@ from typing import Callable
 import click
 from cookiecutter.main import cookiecutter
 
+from envidia import __version__
 from envidia.core.loader import Loader
 
 
@@ -28,6 +29,7 @@ class CLI:
         )
         @click.pass_context
         @self._add_dynamic_options
+        @click.version_option(__version__)
         def cli(ctx, **kwargs):
             """Load from env.d and generate shell script. Run `source <(envidia)` or simply `source <(e)` to load environment context."""
             if not self._bootstrap_loaded and ctx.invoked_subcommand not in [
