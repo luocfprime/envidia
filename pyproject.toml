@@ -46,8 +46,8 @@ dev = [
 
 
 [project.urls]
-Homepage = "https://github.com/fkcptlst/envidia"
-Repository = "https://github.com/fkcptlst/envidia.git"
+Homepage = "https://github.com/luocfprime/envidia"
+Repository = "https://github.com/luocfprime/envidia.git"
 
 [project.scripts]
 envidia = "envidia.__main__:main"
