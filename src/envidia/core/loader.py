@@ -1,7 +1,7 @@
 import importlib.util
+import shlex
 from itertools import chain
 from pathlib import Path
-from shlex import quote
 from typing import Any, Callable, Dict, List, Optional, Union
 
 import natsort
@@ -98,7 +98,7 @@ class Loader:
         self._load_env_files_to_registry()
         commands.extend(
             [
-                f"export {env_var}={quote(value)}"
+                f"export {env_var}={shlex.quote(value)}"
                 for env_var, value in self.env_registry.items()
                 if value is not None
             ]
