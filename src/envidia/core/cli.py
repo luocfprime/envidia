@@ -4,7 +4,6 @@ from shlex import quote
 from typing import Callable
 
 import click
-from cookiecutter.main import cookiecutter
 
 from envidia import __version__
 from envidia.core.loader import Loader
@@ -48,6 +47,8 @@ class CLI:
         @click.argument("template", type=click.Path(exists=True))
         def init(template):
             """Initialize new environment template using cookiecutter"""
+            from cookiecutter.main import cookiecutter  # lazy import
+
             cookiecutter(template)
             click.echo(f"Successfully initialized template from {template}")
 
